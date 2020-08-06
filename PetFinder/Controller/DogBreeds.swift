@@ -36,33 +36,32 @@ class DogBreeds {
         guard let url  = URL(string: K.urlString.token)  else { print(Error.invalidURL); return }
         guard let body = K.bodyString.data(using: .utf8) else { print(Error.invalidBody); return }
         
-        //Mark: - Create token URLRequest
+    //Mark: - Create token URLRequest
         var urlRequest        = URLRequest(url : url)
-        urlRequest.httpMethod = "POST"
+        urlRequest.httpMethod = HttpMethod.post.rawValue
         urlRequest.httpBody   = body
         
         var token : String?    = nil
 
         URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
             do {
-                guard error == nil else { print("Error: ", error!.localizedDescription); return }
+                guard error == nil else { print(error!.localizedDescription); return }
                 guard let data = data else { print(Error.noData); return }
                 let jsonDecoder = JSONDecoder()
                 let json = try jsonDecoder.decode(Token.self, from: data)
                 token = json.accessToken
                 if token == nil { print(Error.noToken) }
             } catch {
-                print("Error with URL Request: ", error.localizedDescription)
+                print(error.localizedDescription)
             }
 
             guard let url = URL(string: K.urlString.request) else { print(Error.invalidURL); return }
             
         //Mark: - Create data URLRequest using token
             var urlRequest = URLRequest(url: url)
-            urlRequest.httpMethod = "GET"
-            let value = "Bearer " + (token ?? "Token is nil")
-            urlRequest.addValue(value, forHTTPHeaderField: "Authorization")
-            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = HttpMethod.get.rawValue
+            let value = K.bearer + (token ?? Error.noToken)
+            urlRequest.addValue(value, forHTTPHeaderField: HttpHeaderField.auth.rawValue)
             
             URLSession.shared.dataTask(with: urlRequest) { [weak self] (data, response, error) in
                 do {
@@ -73,7 +72,7 @@ class DogBreeds {
                     self?.breeds = json.breeds
                     self?.dispatchGroup.leave()
                 } catch {
-                    print("Error: ", error.localizedDescription)
+                    print(error.localizedDescription)
                 }
             }.resume()
         }.resume()

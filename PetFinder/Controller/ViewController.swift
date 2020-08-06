@@ -10,7 +10,7 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
-    
+
     let dogBreeds      = DogBreeds()
     var breeds: [(section: String, details: [String])] = []
     
@@ -48,7 +48,7 @@ extension ViewController: BreedList {
             }
             
             self.breeds.sort(by: { $0.section < $1.section } )
-            self.breeds.map{ $0.details }.sorted(by: { $0 < $1 } )
+            _ = self.breeds.map{ _ = $0.details }.sorted(by: { $0 < $1 } )
         }
         tableView.reloadData()
     }

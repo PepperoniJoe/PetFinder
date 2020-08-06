@@ -15,6 +15,8 @@ struct K {
         "https://api.petfinder.com/v2/oauth2/token",
         "https://api.petfinder.com/v2/types/dog/breeds"
     )
+    
+    static let bearer = "Bearer "
 }
 
 struct Error {
@@ -26,4 +28,13 @@ struct Error {
 
 struct Warning {
     static let testDataUsed = "🚧 Caution. This app is using TEST data."
+}
+
+enum HttpMethod: String {
+    case post = "POST"
+    case get = "GET"
+}
+
+enum HttpHeaderField: String {
+    case auth = "Authorization"
 }
